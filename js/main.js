@@ -128,16 +128,55 @@ function drawPie(angFrom, angDelta, color){
     bevelThickness: 1  
     */
   };
-  var geometry = new THREE.ExtrudeGeometry( shape, extrudeOpts );
+  //var geometry = new THREE.ExtrudeGeometry( shape, extrudeOpts );
+  var geometry = new THREE.CylinderGeometry( 30, 30, 5, 10, 10, false, 0, angDelta);
+  /*
+  var mesh = new THREE.Object3D()
+  //var mesh = new Physijs.ConvexMesh(geometry)
+
+  mesh.add( new THREE.Line(geometry, 
+    new THREE.LineBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.5
+    })
+  ) );
+
+  mesh.add( new THREE.Mesh(
+    geometry,
+    new THREE.MeshPhongMaterial({
+      color: 0x156289,
+      emissive: 0x072534,
+      side: THREE.DoubleSide,
+      shading: THREE.FlatShading
+    })
+  ) );
+
+
+  pieobj = mesh;
+  */
+  //var geometry = new THREE.CylinderGeometry( 20, 20, 5, 32, 32, false, 0, 2*Math.PI);
   //var geometry = new THREE.ShapeGeometry( shape );
 
   // Creating the 3D object, positioning it and adding it to the scene
   //pieobj = new THREE.Mesh( geometry, material );
-  pieobj = new Physijs.ConvexMesh( geometry, material );
-  pieobj.rotation.set(0,0,angFrom);
+  //pieobj = new Physijs.BoxMesh( geometry, material );
+  //pieobj = new Physijs.CylinderMesh( geometry, material );
+  pieobj = new Physijs.ConcaveMesh( geometry, material );
+  //pieobj = new Physijs.ConvexMesh( geometry, material );
+  //pieobj.rotation.set(0.5*Math.PI,angFrom,0);
+  //pieobj.rotation.set(0.5*Math.PI,angFrom,0);
+  //pieobj.rotateOnAxis( new THREE.Vector3(1, 0, 0), 0.5*Math.PI )
+  pieobj.rotateOnAxis( new THREE.Vector3(0, 1, 0), angFrom )
+  //pieobj.rotateOnAxis( new THREE.Vector3(0, 0, 1), 0.1)
+  //pieobj.__dirtyRotation = true;
   // Adds shadows if selected as an option
   pieobj.castShadow = true;
   pieobj.receiveShadow = true;
+  //mesh.setCcdMotionThreshold(1);
+
+  // Set the radius of the embedded sphere such that it is smaller than the object
+  // mesh.setCcdSweptSphereRadius(0.2);
   return pieobj
 
 }
@@ -145,14 +184,20 @@ function drawPie(angFrom, angDelta, color){
 var slicesCount = 3.0;
 //console.log(1.0/slicesCount)
 var angDelta = (Math.PI*2.0*1.0/slicesCount);
+var roulette = new Physijs.CylinderMesh(new THREE.CylinderGeometry( 30, 30, 3, 10, 10, false));//TODO: extract these parameters
+roulette.rotateOnAxis( new THREE.Vector3(1, 0, 0), 0.5*Math.PI )
+roulette.position.set(0, 10, 0)
 var pies = []
 for (var i = 0; i < slicesCount; i++){
   //console.log(getColor(i, slicesCount))
   var pie = drawPie(angDelta * i, angDelta, getColor(i,slicesCount))
-  pies.push(pie)
-  scene.add(pie)
+  roulette.add(pie)
+  //pies.push(pie)
+  //scene.add(pie)
   
 }
+scene.add(roulette)
+roulette.setAngularVelocity({x: 0, y: 0, z: 20})
 //scene.add( pieobj );
     
 //var cube = new THREE.Mesh( geometry, material  );
