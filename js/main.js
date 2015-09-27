@@ -63,7 +63,7 @@ var table_material = Physijs.createMaterial(
 table_material.map.wrapS = table_material.map.wrapT = THREE.RepeatWrapping;
 table_material.map.repeat.set( 5, 5  );
 var ground = new Physijs.BoxMesh(
-  new THREE.BoxGeometry(300, 1, 100),
+  new THREE.BoxGeometry(250, 1, 60),
   //new THREE.MeshPhongMaterial( { color: 0x404040, specular: 0x009900, shininess: 30, shading: THREE.FlatShading  }  ),
   //new THREE.MeshLambertMaterial( { color: 0x404040}  ),
   table_material,
@@ -71,12 +71,12 @@ var ground = new Physijs.BoxMesh(
 
 );
 ground.receiveShadow = true;
-ground.position.set(0,-30,0);
+ground.position.set(0,-25,20);
 //ground.rotation.set(0,-20,-10);
 scene.add( ground  );
 
 var backboard = new Physijs.BoxMesh(
-  new THREE.BoxGeometry(100, 1, 100),
+  new THREE.BoxGeometry(300, 1, 150),
   //new THREE.MeshPhongMaterial( { color: 0x404040, specular: 0x009900, shininess: 30, shading: THREE.FlatShading  }  ),
   //new THREE.MeshLambertMaterial( { color: 0x404040}  ),
   table_material,
@@ -84,7 +84,7 @@ var backboard = new Physijs.BoxMesh(
 
 );
 backboard.receiveShadow = true;
-backboard.position.set(0,0,-5);
+backboard.position.set(0,30,-5);
 backboard.rotation.set(0.5 * Math.PI, 0, 0);
 backboard.receiveShadow = true;
 scene.add( backboard);
@@ -154,12 +154,10 @@ function drawPie(angFrom, angDelta, color, text){
   };
   */
   //var geometry = new THREE.ExtrudeGeometry( shape, extrudeOpts );
-  var geometry = new THREE.CylinderGeometry( 30, 30, 15, 10, 10, false, 0, angDelta);
+  var geometry = new THREE.CylinderGeometry( 30, 30, 15, 32, 3, false, 0, angDelta);
   var textGeometry = new THREE.TextGeometry( text, {
     size: 5,
     height: 1,
-
-
   });
   /*
   var mesh = new THREE.Object3D()
@@ -281,8 +279,8 @@ constraint.setLimits({
 //scene.add( cube  );
 
 //camera.position.z = 25;
-camera.position.set(0,20,80);
-//camera.position.set(-80,20,80);
+camera.position.set(-3,20,80);
+//camera.position.set(-80,20,0);
 //camera.up = new THREE.Vector3(0,0,0);
 //camera.lookAt(new THREE.Vector3(30,30,0));
 camera.lookAt(new THREE.Vector3(0,0,0));
@@ -290,9 +288,9 @@ camera.lookAt(new THREE.Vector3(0,0,0));
 var firstHit = true;
 var dartsQueue = []
 window.addEventListener('click', function(e){
-  var geometry = new THREE.SphereGeometry( 1, 32, 32  );
+  var geometry = new THREE.SphereGeometry( 2, 32, 32  );
   var material = new THREE.MeshPhongMaterial( { 
-    color: 0xff0000
+    color: 0xff0000,
   } );
   //var material = new THREE.PhonMaterial( {color: 0xffff00}  );
   var dart = new Physijs.SphereMesh( geometry, material );
@@ -318,6 +316,35 @@ window.addEventListener('click', function(e){
       other_obj.material.emissive.setHex(0x808080)
       winnerPie = other_obj;
       //other_obj.mass = 
+      var damperGeometry = new THREE.CylinderGeometry( 30, 30, 4.7, 10, 10, false);
+      var damperMaterial =  Physijs.createMaterial (
+        
+      new THREE.MeshPhongMaterial( { 
+        color: 0xffffff,
+        transparent: true,
+        opacity: 0.1 //For Debug
+      }  ) ,
+      .3, //friction
+      .8 // restitution (bouncy-ness)
+      )
+      var damper = new Physijs.CylinderMesh(damperGeometry, damperMaterial)
+      damper.rotateOnAxis( new THREE.Vector3(1, 0, 0), -0.5*Math.PI )
+      damper.position.set(0, 10, 1.5)
+      scene.add(damper)
+      var constraint = new Physijs.HingeConstraint(
+      //var constraint = new Physijs.PointConstraint(
+        damper, // First object to be constrained
+        new THREE.Vector3( 0, 10, 0  ), // point in the scene to apply the constraint
+        new THREE.Vector3( 0, 1, 0  ) // Axis along which the hinge lies - in this case it is the X axis
+      );
+      scene.addConstraint( constraint  );
+      constraint.setLimits({
+        low: 0, // minimum angle of motion, in radians
+        high: 1000, // maximum angle of motion, in radians
+        bias_factor: 0.3, // applied as a factor to constraint error
+        relaxation_factor: 1.0 // controls bounce at limit (0.0 == no bounce)
+      }
+                      );
     }
     firstHit = false;
     //constraint.enableAngularMotor(true, -1000, 999999999)
