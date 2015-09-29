@@ -182,7 +182,7 @@ function handleDartHit(other_obj, rel_velocity, rel_rotation){
     .8, //friction
     .8 // restitution (bouncy-ness)
   )
-  var damperGeometry = new THREE.CylinderGeometry( 30, 30, 5.0, 10, 10, false);
+  var damperGeometry = new THREE.CylinderGeometry( 30, 30, 4.9, 10, 10, false);
   var damper = new Physijs.CylinderMesh(damperGeometry, damperMaterial)
   damper.rotateOnAxis( new THREE.Vector3(1, 0, 0), -0.5*Math.PI )
   damper.position.set(0, 10, 1.5)
