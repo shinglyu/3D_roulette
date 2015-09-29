@@ -9,3 +9,5 @@
 * Ball follows the mouse
 * Re-render when viewport changes
 * Use THREE.clock
+* Add text instructions
+* README

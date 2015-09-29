@@ -13,8 +13,11 @@
     "tests"
   ],
   "dependencies": {
-    "three.js": "~0.71.0",
+    "three.js": "*",
     "physijs": "*",
     "stats.js": "*"
+  },
+  "resolutions": {
+    "threejs": "r59"
   }
 }
