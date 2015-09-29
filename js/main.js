@@ -81,7 +81,11 @@ function getColor(i, total){
   var h = i/total;
   //console.log("hsl(" + h + ", 70%, 50%)")
   //return (new THREE.Color("hsl(" + h + ", 70%, 50%)"));
-  return (new THREE.Color("rgb("+ h*255+",100,0)" ))
+  console.log(h*255)
+  var color = new THREE.Color();
+  color.setHSL(h, 0.9, 0.5);
+  return color
+  //return (new THREE.Color("rgb("+ h*255+",100,0)" ))
 }
 
 function boundToHinge(obj){
@@ -100,6 +104,18 @@ function boundToHinge(obj){
                         );
 
 }
+
+function extractTexts(){
+  var regex = /texts\=([a-zA-Z0-9\s,]*)/
+  var matches = window.location.search.match(regex)
+  if (matches == null){
+    return ["mozilla", "firefox", "is", "awesome"]
+  }
+  else {
+    return matches[1].split(',')
+  }
+}
+
 
 function drawPie(angFrom, angDelta, color, text){
   var pieMaterial =  new THREE.MeshPhongMaterial( { 
@@ -149,10 +165,11 @@ function drawPie(angFrom, angDelta, color, text){
 
 function prepareRoulette(texts){
 
-  var slicesCount = 3.0;
+  //var slicesCount = 3.0;
+  var slicesCount = texts.length;
   var angDelta = (Math.PI*2.0*1.0/slicesCount);
   var pies = []
-  texts = ["Mozilla", "Firefox", "Rocks"]
+  //texts = ["Mozilla", "Firefox", "Rocks"]
   //TODO: repeat the options, calculate slicesCount based on texts
   for (var i = 0; i < slicesCount; i++){
     var pie = drawPie(angDelta * i, angDelta, getColor(i,slicesCount), texts[i])
@@ -249,7 +266,8 @@ function prepareStats(){
 
 initScene(); //TODO: move me to the end
 prepareStage();
-prepareRoulette();
+prepareRoulette(extractTexts());
 prepareDart();
 if (showStats){ prepareStats(); }
 render();
+
