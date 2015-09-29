@@ -6,6 +6,8 @@ var maxDartsCount = 20;
 var cameraPosition = [-3, 20, 80]
 //var cameraPosition = [-50, 20, 0]
 var firstHit = true;
+//var showStats = false;
+var showStats = true;
 
 var scene, camera, renderer;//FIXME: don't use global
 
@@ -235,12 +237,19 @@ var render = function () {
     }
   }
 
-  scene.simulate()
+  scene.simulate();
   renderer.render(scene, camera);
+  if (showStats){ stats.update();}
 };
+
+function prepareStats(){
+  stats = new Stats();
+  document.body.appendChild(stats.domElement);
+}
 
 initScene(); //TODO: move me to the end
 prepareStage();
 prepareRoulette();
 prepareDart();
+if (showStats){ prepareStats(); }
 render();

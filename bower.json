@@ -14,6 +14,7 @@
   ],
   "dependencies": {
     "three.js": "~0.71.0",
-    "physijs": "*"
+    "physijs": "*",
+    "stats.js": "*"
   }
 }
