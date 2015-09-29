@@ -7,3 +7,5 @@
 * Glow at 0.5 milliseconds
 * Glow, Halo
 * Ball follows the mouse
+* Re-render when viewport changes
+* Use THREE.clock
