@@ -109,7 +109,7 @@ function extractTexts(){
   var regex = /texts\=([a-zA-Z0-9\s,]*)/
   var matches = window.location.search.match(regex)
   if (matches == null){
-    return ["mozilla", "firefox", "is", "awesome"]
+    return ["we", "love", "mozilla", "firefox"]
   }
   else {
     return matches[1].split(',')
@@ -128,10 +128,12 @@ function drawPie(angFrom, angDelta, color, text){
     //wireframe: true
     //metal: true
   }  ) ;
-  var pieGeometry = new THREE.CylinderGeometry( 30, 30, 15, 32, 3, false, 0, angDelta);
+  var diameter = 30;
+  var thickness = 15
+  var pieGeometry = new THREE.CylinderGeometry( diameter, diameter, thickness, 32, 3, false, 0, angDelta);
   pieobj = new Physijs.ConvexMesh( pieGeometry, pieMaterial );
   pieobj.rotateOnAxis( new THREE.Vector3(1, 0, 0), 0.5*Math.PI )
-  pieobj.rotateOnAxis( new THREE.Vector3(0, 1, 0), angFrom )
+  pieobj.rotateOnAxis( new THREE.Vector3(0, 1, 0), -angFrom )
   pieobj.position.set(0, 10, 5)
   pieobj.castShadow = true;
   pieobj.receiveShadow = true;
@@ -147,14 +149,16 @@ function drawPie(angFrom, angDelta, color, text){
     //metal: true
   }  ) 
 
+  var textSize=5
   var textGeometry = new THREE.TextGeometry( text, {
-    size: 5,
+    size: textSize,
     height: 1,
-  });
+  }, 0);
   text = new Physijs.BoxMesh( textGeometry, textMaterial );
   text.rotateOnAxis( new THREE.Vector3(1, 0, 0), -0.5*Math.PI );
-  text.rotateOnAxis( new THREE.Vector3(0, 0, 1), -0.2*Math.PI );
-  text.position.set( 5, 8, 5 );
+  text.rotateOnAxis( new THREE.Vector3(0, 0, 1), -0.5*Math.PI);
+  //text.rotateOnAxis( new THREE.Vector3(0, 0, 1), -0.5*Math.PI + 0.5*angDelta);
+  text.position.set( textSize/2, thickness/2+0.5, diameter/5 );//size/2, 8, half diameter
   text.castShadow = true;
   text.receiveShadow = true;
 
